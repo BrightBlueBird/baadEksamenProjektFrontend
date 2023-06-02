@@ -1,7 +1,6 @@
 console.log("SejlbaadData");
 
 const sejlBaadNavn  = document.getElementById("sejlbaadNavn");
-const point = document.getElementById("point");
 const baadtype = document.getElementById("baadtypedropdown");
 let baadTypeListe = [];
 
@@ -33,7 +32,6 @@ function getSejlbaad() {
             let baad = response[i];
             let baadId = baad.id;
             let baadNavn = baad.navn;
-            let baadPoint = baad.point;
             let baadStorelse = baad.bådtypeid;
 
 
@@ -41,7 +39,6 @@ function getSejlbaad() {
             let row = table.insertRow(0);
             let cell1 = row.insertCell(0);
             let cell2 = row.insertCell(1);
-            let cell3 = row.insertCell(2);
 
             let inputNavn = document.createElement("input");
             inputNavn.type = "text";
@@ -49,11 +46,7 @@ function getSejlbaad() {
             inputNavn.disabled = true;
             cell1.appendChild(inputNavn);
 
-            let inputPoint = document.createElement("input");
-            inputPoint.type = "text";
-            inputPoint.value = baadPoint;
-            inputPoint.disabled = true;
-            cell2.appendChild(inputPoint);
+
 
             let selectType = document.createElement("select");
             selectType.disabled = true;
@@ -76,7 +69,7 @@ function getSejlbaad() {
                 selectType.appendChild(option2);
             }
 
-            cell3.appendChild(selectType);
+            cell2.appendChild(selectType);
 
 
 
@@ -85,10 +78,9 @@ function getSejlbaad() {
             editButton.setAttribute("class", "btn btn-primary");
             editButton.addEventListener("click", function () {
                 inputNavn.disabled = false;
-                inputPoint.disabled = false;
                 selectType.disabled = false;
             });
-            cell3.appendChild(editButton);
+            cell2.appendChild(editButton);
 
             let saveButton = document.createElement("button");
             saveButton.innerHTML = "Save";
@@ -96,12 +88,11 @@ function getSejlbaad() {
             saveButton.addEventListener("click", function () {
 
                 let rettetBaadNavn = inputNavn.value;
-                let rettetBaadPoint = inputPoint.value;
                 let rettetBaadType = selectType.value;
 
-                updateSejlbaad(baadId, rettetBaadNavn, rettetBaadPoint, rettetBaadType);
+                updateSejlbaad(baadId, rettetBaadNavn, rettetBaadType);
             });
-            cell3.appendChild(saveButton);
+            cell2.appendChild(saveButton);
 
             let deleteButton = document.createElement("button");
             deleteButton.innerHTML = "Delete";
@@ -109,13 +100,13 @@ function getSejlbaad() {
             deleteButton.addEventListener("click", function () {
                deleteSejlbaad(baadId);
             });
-            cell3.appendChild(deleteButton);
+            cell2.appendChild(deleteButton);
 }
     });
 }
 
 function updateSejlbaad(baadId, modifiedBaadNavn, modifiedBaadPoint, modifiedBaadType) {
-    let baadBody = { "id": baadId, "navn": modifiedBaadNavn, "point": modifiedBaadPoint, "bådtypeid": {"id" : modifiedBaadType}};
+    let baadBody = { "id": baadId, "navn": modifiedBaadNavn, "bådtypeid": {"id" : modifiedBaadType}};
 
     api('api/put/retsejlbaad', 'PUT', baadBody).then(response => {
         console.log(response);
@@ -131,7 +122,7 @@ function deleteSejlbaad(baadId) {
 
 function opretNyBaad() {
 
-    let baadBody = { "navn": sejlBaadNavn.value, "point": point.value, "bådtypeid": {"id" : baadtype.value} ,};
+    let baadBody = { "navn": sejlBaadNavn.value, "bådtypeid": {"id" : baadtype.value}};
 
     console.log(baadBody)
     api('api/post/sejlbaad', 'POST', baadBody).then(response => {
